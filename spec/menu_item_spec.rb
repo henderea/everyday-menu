@@ -12,7 +12,7 @@ describe 'creating menu items' do
   end
 
   it 'allows extra options to create method' do
-    m = EverydayMenu::MenuItem.create :create_site, 'Create Site', enabled: false, tag: 1, image: NSImage.imageNamed('NSMenuRadio'), state: NSOnState
+    m = EverydayMenu::MenuItem.create :create_site, 'Create Site', enabled: false, tag: 1, state: NSOnState
     m.menuItem.title.should.equal m.title
     m.menuItem.isEnabled.should.equal m.isEnabled
     m.menuItem.tag.should.equal m.tag

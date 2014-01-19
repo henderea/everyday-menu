@@ -17,7 +17,9 @@ module EverydayMenu
       end
     end
 
-    alias :separatorItem :separator
+    def self.separatorItem
+      self.separator
+    end
 
     def initialize(menuItem=nil)
       @menuItem = menuItem || NSMenuItem.alloc.init

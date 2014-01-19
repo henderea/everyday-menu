@@ -18,7 +18,7 @@ Motion::Project::App.setup do |app|
   app.identifier = 'us.myepg.everyday-menu'
   app.specs_dir  = 'spec/'
 
-  #if ENV['example']
-  #  app.files << Dir["examples/#{ENV['example']}/**/*.rb"]
-  #end
+  if ENV['example']
+    app.files << Dir["examples/#{ENV['example']}/**/*.rb"]
+  end
 end

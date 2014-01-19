@@ -19,3 +19,5 @@ build
 vendor
 
 /.idea/
+
+/projectFilesBackup/
