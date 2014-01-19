@@ -98,7 +98,7 @@ module EverydayMenu
     alias :tag= :setTag
 
     def subscribe(&block)
-      @menuItem.subscribe(&block)
+      @menuItem.subscribe(self.label, &block)
     end
 
     def execute
@@ -108,16 +108,25 @@ module EverydayMenu
 end
 
 class NSMenuItem
-  def subscribe(&block)
-    @blocks ||= []
-    @blocks << block
-    return if (self.target = self && self.action == :'runBlocks:')
+  attr_reader :commands
+
+  def subscribe(label, &block)
+    @commands ||= EverydayMenu::CommandList.new(label)
+    @commands.add &block
+    command      = @commands.last
+    self.enabled = @commands.canExecute
+    unless @boundEnabled
+      @boundEnabled = true
+      self.bind(NSEnabledBinding, toObject: self.commands, withKeyPath: 'canExecute', options: nil)
+    end
+    return command if (self.target = self && self.action == :'runBlocks:')
     @original_target = self.target
     self.target      = self
     self.action      = :'runBlock:'
+    command
   end
 
   def runBlock(sender)
-    @blocks.each { |block| block.call(sender) } unless @blocks.nil?
+    @commands.execute(sender) unless @commands.nil?
   end
 end

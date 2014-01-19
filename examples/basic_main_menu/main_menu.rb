@@ -2,19 +2,19 @@ class MainMenu
   extend EverydayMenu::MenuBuilder
 
   menuItem :quit, 'Quit', key_equivalent: 'q'
+
   menuItem :open, 'Open', key_equivalent: 'o'
   menuItem :new, 'New'
-
   menuItem :close, 'Close', key_equivalent: 'w'
 
-  mainMenu :app, 'Blah' do
+  mainMenu(:app, 'Blah') {
     quit
-  end
+  }
 
-  mainMenu :file, 'File' do
+  mainMenu(:file, 'File') {
     new
     open
     ___
     close
-  end
+  }
 end

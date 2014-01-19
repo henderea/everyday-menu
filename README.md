@@ -31,34 +31,61 @@ Everyday Menu separates menu layout from menu definition. Menu definition looks 
 class MainMenu
   extend EverydayMenu::MenuBuilder
 
-  menuItem :create_site, 'Create Site'
-  menuItem :export, 'Export to Folder...'
-  menuItem :import, 'Import Folder as Site...'
-  menuItem :force_rebuild, 'Force Rebuild'
-  menuItem :about, 'About Staticly'
   menuItem :quit, 'Quit', key_equivalent: 'q'
+
+  menuItem :open, 'Open', key_equivalent: 'o'
+  menuItem :new, 'New'
+  menuItem :close, 'Close', key_equivalent: 'w'
 end
+
 ```
 
-and then layout is as simple as:
+Layout is as simple as:
 
 ```ruby
-
 class MainMenu
   extend EverydayMenu::MenuBuilder
 
-  mainMenu :main_menu, 'Main Menu' do
-    create_site
-    ___
-    export
-    import
-    force_rebuild
-    ___
-    about
+  mainMenu(:app, 'Blah') {
     quit
+  }
+
+  mainMenu(:file, 'File') {
+    new
+    open
+    ___
+    close
+  }
+end
+```
+
+And actions are as simple as:
+```ruby
+class AppDelegate
+  def applicationDidFinishLaunching(notification)
+    @has_open = false
+    MainMenu.build!
+
+    MainMenu[:app].subscribe(:quit) { |_, _| NSApp.terminate(self) }
+
+    MainMenu[:file].subscribe(:new) { |_, _|
+      @has_open = true
+      puts 'new'
+    }
+
+    MainMenu[:file].subscribe(:close) { |_, _|
+      @has_open = false
+      puts 'close'
+    }.canExecuteBlock { |_| @has_open }
+
+    MainMenu[:file].subscribe(:open) { |_, _|
+      @has_open = true
+      puts 'open'
+    }
   end
 end
 ```
+
 
 ## Running the Examples
 

@@ -1,24 +1,23 @@
 class AppDelegate
-
   def applicationDidFinishLaunching(notification)
+    @has_open = false
     MainMenu.build!
 
-    MainMenu[:app].subscribe :quit do |_|
-      NSApp.terminate(self)
-    end
+    MainMenu[:app].subscribe(:quit) { |_, _| NSApp.terminate(self) }
 
-    MainMenu[:file].subscribe :new do |_|
+    MainMenu[:file].subscribe(:new) { |_, _|
+      @has_open = true
       puts 'new'
-    end
+    }
 
-    MainMenu[:file].subscribe :close do |_|
+    MainMenu[:file].subscribe(:close) { |_, _|
+      @has_open = false
       puts 'close'
-    end
+    }.canExecuteBlock { |_| @has_open }
 
-    MainMenu[:file].subscribe :open do |_|
+    MainMenu[:file].subscribe(:open) { |_, _|
+      @has_open = true
       puts 'open'
-    end
-
+    }
   end
-
 end
