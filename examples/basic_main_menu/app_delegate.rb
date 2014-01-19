@@ -3,6 +3,7 @@ class AppDelegate
     @has_open = false
     MainMenu.build!
 
+    MainMenu[:app].subscribe(:hide_others) { |_, _| NSApp.hideOtherApplications(self) }
     MainMenu[:app].subscribe(:quit) { |_, _| NSApp.terminate(self) }
 
     MainMenu[:file].subscribe(:new) { |_, _|

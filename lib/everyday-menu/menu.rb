@@ -41,36 +41,36 @@ module EverydayMenu
 
     def has(key)
       name = key_to_name(key, 'has')
-      begin
+      if self.respond_to?(name)
         self.send(name)
-      rescue NoMethodError
+      else
         @menu.send(name)
       end
     end
 
     def is(key)
       name = key_to_name(key, 'is')
-      begin
+      if self.respond_to?(name)
         self.send(name)
-      rescue NoMethodError
+      else
         @menu.send(name)
       end
     end
 
     def [](key)
       name = key_to_name(key)
-      begin
+      if self.respond_to?(name)
         self.send(name)
-      rescue NoMethodError
+      else
         @menu.send(name)
       end
     end
 
     def []=(key, value)
       name = key_to_name(key, 'set')
-      begin
+      if self.respond_to?(name)
         self.send(name, value)
-      rescue NoMethodError
+      else
         @menu.send(name, value)
       end
     end

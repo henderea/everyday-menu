@@ -21,3 +21,5 @@ vendor
 /.idea/
 
 /projectFilesBackup/
+
+/.repl_history

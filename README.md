@@ -31,6 +31,7 @@ Everyday Menu separates menu layout from menu definition. Menu definition looks 
 class MainMenu
   extend EverydayMenu::MenuBuilder
 
+  menuItem :hide_others, 'Hide Others', key_equivalent: 'H', key_equivalent_modifier_mask: NSCommandKeyMask|NSAlternateKeyMask
   menuItem :quit, 'Quit', key_equivalent: 'q'
 
   menuItem :open, 'Open', key_equivalent: 'o'
@@ -47,6 +48,8 @@ class MainMenu
   extend EverydayMenu::MenuBuilder
 
   mainMenu(:app, 'Blah') {
+    hide_others
+    ___
     quit
   }
 
@@ -66,6 +69,7 @@ class AppDelegate
     @has_open = false
     MainMenu.build!
 
+    MainMenu[:app].subscribe(:hide_others) { |_, _| NSApp.hideOtherApplications(self) }
     MainMenu[:app].subscribe(:quit) { |_, _| NSApp.terminate(self) }
 
     MainMenu[:file].subscribe(:new) { |_, _|
@@ -85,7 +89,11 @@ class AppDelegate
   end
 end
 ```
+## Known Issues
 
+Here are known issues.  If you encounter one, please log a bug ticket in the issue tracker (link above)
+
+1. Some methods in `NSMenuItem` that set values don't like being called with `send`.  I have to handle these on a case-by-case basis.  Please log a bug in my issue tracker (link above) with any you find.  It is possible that `NSMenu` might have the same issue.
 
 ## Running the Examples
 
