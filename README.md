@@ -1,5 +1,8 @@
 # EverydayMenu
 
+## Issue Tracking
+Please use <https://everydayprogramminggenius.atlassian.net/browse/EM> for issue tracking.
+
 ## Credit
 Please note that this gem is strongly based off of Joe Fiorini's `drink-menu` gem (with a little code copy-paste and lots of test and readme copy-paste), which I couldn't get to work for me.
 
