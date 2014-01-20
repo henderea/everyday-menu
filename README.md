@@ -1,5 +1,7 @@
 # EverydayMenu
 
+[![Gem Version](https://badge.fury.io/rb/everyday-menu.png)](http://badge.fury.io/rb/everyday-menu)
+
 ## Updates
 * 0.4.0:
     * Please see the "Introducing Presets!" section below for an awesome new feature!
