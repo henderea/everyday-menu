@@ -16,6 +16,9 @@ module EverydayMenu
       @menu          = NSMenu.alloc.init
       @menuItems     = MenuItemList.new(@menu)
       @needsMenuItem = false
+      @servicesMenu  = false
+      @windowMenu    = false
+      @helpMenu      = false
     end
 
     def menuItemFromMenu!
@@ -89,6 +92,48 @@ module EverydayMenu
     end
 
     alias :label= :setLabel
+
+    def isServicesMenu
+      @servicesMenu
+    end
+
+    alias :servicesMenu :isServicesMenu
+    alias :services_menu? :isServicesMenu
+
+    def setServicesMenu(value)
+      @servicesMenu = value
+    end
+
+    alias :servicesMenu= :setServicesMenu
+    alias :services_menu= :setServicesMenu
+
+    def isWindowsMenu
+      @windowMenu
+    end
+
+    alias :windowsMenu :isWindowsMenu
+    alias :windows_menu? :isWindowsMenu
+
+    def setWindowsMenu(value)
+      @windowMenu = value
+    end
+
+    alias :windowsMenu= :setWindowsMenu
+    alias :windows_menu= :setWindowsMenu
+
+    def isHelpMenu
+      @helpMenu
+    end
+
+    alias :helpMenu :isHelpMenu
+    alias :help_menu? :isHelpMenu
+
+    def setHelpMenu(value)
+      @helpMenu = value
+    end
+
+    alias :helpMenu= :setHelpMenu
+    alias :help_menu= :setHelpMenu
 
     def items
       @menuItems
