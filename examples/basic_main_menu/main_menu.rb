@@ -11,6 +11,12 @@ class MainMenu
   menuItem :new, 'New'
   menuItem :close, 'Close', key_equivalent: 'w'
 
+  menuItem :status_open, 'Open', key_equivalent: 'o'
+  menuItem :status_new, 'New'
+  menuItem :status_close, 'Close', key_equivalent: 'w'
+  menuItem :status_quit, 'Quit', preset: :quit
+
+
   mainMenu(:app, 'Blah') {
     hide_others
     show_all
@@ -25,5 +31,14 @@ class MainMenu
     open
     ___
     close
+  }
+
+  statusbarMenu(:statusbar, 'Statusbar Menu') {
+    status_new
+    status_open
+    ___
+    status_close
+    ___
+    status_quit
   }
 end

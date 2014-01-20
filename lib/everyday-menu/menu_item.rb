@@ -1,5 +1,7 @@
 module EverydayMenu
   class MenuItem
+    include MyAccessors
+
     def self.create(label, title, options = {})
       new.tap { |item|
         item[:label] = label
@@ -25,67 +27,22 @@ module EverydayMenu
       @menuItem = menuItem || NSMenuItem.alloc.init
     end
 
-    def has(key)
-      name = key_to_name(key, 'has')
-      if self.respond_to?(name)
-        self.send(name)
-      else
-        @menuItem.send(name)
-      end
-    end
-
-    def is(key)
-      name = key_to_name(key, 'is')
-      if self.respond_to?(name)
-        self.send(name)
-      else
-        @menuItem.send(name)
-      end
-    end
-
-    def [](key)
-      name = key_to_name(key)
-      if self.respond_to?(name)
-        self.send(name)
-      else
-        @menuItem.send(name)
-      end
-    end
-
-    def []=(key, value)
-      name = key_to_name(key, 'set')
-      if self.respond_to?(name)
-        self.send(name, value)
-      else
-        @menuItem.send(name, value)
-      end
-    end
-
-    def key_to_name(key, prefix = nil)
-      rval = key.to_s.gsub(/_(\w)/) { |_| $1.upcase }
-      prefix.nil? ? rval : "#{prefix}#{rval[0].upcase}#{rval[1..-1]}"
+    def containedObject
+      @menuItem
     end
 
     def setSubmenu(menu)
       @menuItem.submenu = menu.menu
     end
 
-    def menuItem
-      @menuItem
-    end
-
-    alias :menu_item :menuItem
+    my_attr_reader :menuItem
     alias :item :menuItem
 
     def label
       @label ||= nil
     end
 
-    def setLabel(label)
-      @label = label
-    end
-
-    alias :label= :setLabel
+    my_attr_writer :label
 
     def tag
       @menuItem.tag

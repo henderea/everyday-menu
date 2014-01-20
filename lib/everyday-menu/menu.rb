@@ -1,6 +1,16 @@
 module EverydayMenu
   class Menu
-    attr_reader :needsMenuItem
+    include MyAccessors
+
+    my_attr_writer :label
+
+    my_attr_accessor_bool :servicesMenu, :windowsMenu, :helpMenu, :mainMenu
+
+    my_attr_reader_bool :statusMenu
+
+    my_attr_reader :statusItemTitle, :statusItemIcon, :statusItemViewClass
+
+    attr_reader :menu, :builder
 
     def self.create(label, title, options = {}, &block)
       new(label, &block).tap { |menu|
@@ -11,14 +21,18 @@ module EverydayMenu
     end
 
     def initialize(label, &block)
-      @label         = label
-      @builder       = block
-      @menu          = NSMenu.alloc.init
-      @menuItems     = MenuItemList.new(@menu)
-      @needsMenuItem = false
-      @servicesMenu  = false
-      @windowMenu    = false
-      @helpMenu      = false
+      @label               = label
+      @builder             = block
+      @menu                = NSMenu.alloc.init
+      @menuItems           = MenuItemList.new(@menu)
+      @mainMenu            = false
+      @statusMenu          = false
+      @servicesMenu        = false
+      @windowsMenu         = false
+      @helpMenu            = false
+      @statusItemTitle     = nil
+      @statusItemIcon      = nil
+      @statusItemViewClass = nil
     end
 
     def menuItemFromMenu!
@@ -42,136 +56,79 @@ module EverydayMenu
       @menuItems << item
     end
 
-    def has(key)
-      name = key_to_name(key, 'has')
-      if self.respond_to?(name)
-        self.send(name)
-      else
-        @menu.send(name)
-      end
-    end
-
-    def is(key)
-      name = key_to_name(key, 'is')
-      if self.respond_to?(name)
-        self.send(name)
-      else
-        @menu.send(name)
-      end
-    end
-
-    def [](key)
-      name = key_to_name(key)
-      if self.respond_to?(name)
-        self.send(name)
-      else
-        @menu.send(name)
-      end
-    end
-
-    def []=(key, value)
-      name = key_to_name(key, 'set')
-      if self.respond_to?(name)
-        self.send(name, value)
-      else
-        @menu.send(name, value)
-      end
-    end
-
-    def key_to_name(key, prefix = nil)
-      rval = key.to_s.gsub(/_(\w)/) { |_| $1.upcase }
-      prefix.nil? ? rval : "#{prefix}#{rval[0].upcase}#{rval[1..-1]}"
+    def containedObject
+      @menu
     end
 
     def runOnBuild
-      if self.is :services_menu
-        NSApp.servicesMenu = self.menu
-      end
-      if self.is :windows_menu
-        NSApp.windowsMenu = self.menu
-      end
-      if self.is :help_menu
-        NSApp.helpMenu = self.menu
-      end
+      @@buildBlocks ||= {}
+      @@buildBlocks.each { |block| block[1].call(self) if self.is(block[0]) }
       @menuItems.each { |item| item.runOnBuild }
     end
+
+    def self.registerBuildBlock(field, &block)
+      @@buildBlocks        ||= {}
+      @@buildBlocks[field] = block
+    end
+
+    registerBuildBlock(:services_menu) { |menu| NSApp.servicesMenu = menu.menu }
+    registerBuildBlock(:windows_menu) { |menu| NSApp.windowsMenu = menu.menu }
+    registerBuildBlock(:help_menu) { |menu| NSApp.helpMenu = menu.menu }
+    registerBuildBlock(:status_menu) { |menu| menu.createStatusItem! }
 
     def label
       @label ||= nil
     end
 
-    def setLabel(label)
-      @label = label
+    def setStatusItemTitle(title)
+      @mainMenu        = false unless title.nil?
+      @statusItemTitle = title
+      @statusMenu      = true unless title.nil?
     end
 
-    alias :label= :setLabel
+    alias :statusItemTitle= :setStatusItemTitle
+    alias :status_item_title= :setStatusItemTitle
 
-    def isServicesMenu
-      @servicesMenu
+    def setStatusItemIcon(icon)
+      @mainMenu       = false unless icon.nil?
+      @statusItemIcon = icon
+      @statusMenu     = true unless icon.nil?
     end
 
-    alias :servicesMenu :isServicesMenu
-    alias :services_menu? :isServicesMenu
+    alias :statusItemIcon= :setStatusItemIcon
+    alias :status_item_icon= :setStatusItemIcon
 
-    def setServicesMenu(value)
-      @servicesMenu = value
+    def setStatusItemViewClass(viewClass)
+      @mainMenu            = false unless viewClass.nil?
+      @statusItemViewClass = viewClass
+      @statusMenu          = true unless viewClass.nil?
     end
 
-    alias :servicesMenu= :setServicesMenu
-    alias :services_menu= :setServicesMenu
+    alias :statusItemViewClass= :setStatusItemViewClass
+    alias :status_item_view_class= :setStatusItemViewClass
 
-    def isWindowsMenu
-      @windowMenu
+    def createStatusItem!
+      statusBar                 = NSStatusBar.systemStatusBar
+      @statusItem               = statusBar.statusItemWithLength(NSSquareStatusItemLength)
+      @statusItem.highlightMode = true
+
+      @statusItem.menu = self.menu
+
+      unless @statusItemViewClass.nil?
+        statusItemView            = @statusItemViewClass.viewWithStatusItem(@statusItem)
+        @statusItem.menu.delegate = @statusItemView
+        @statusItem.view          = statusItemView
+      end
+
+      @statusItem.title = @statusItemTitle
+      @statusItem.image = @statusItemIcon
+
+      @statusItem
     end
-
-    alias :windowsMenu :isWindowsMenu
-    alias :windows_menu? :isWindowsMenu
-
-    def setWindowsMenu(value)
-      @windowMenu = value
-    end
-
-    alias :windowsMenu= :setWindowsMenu
-    alias :windows_menu= :setWindowsMenu
-
-    def isHelpMenu
-      @helpMenu
-    end
-
-    alias :helpMenu :isHelpMenu
-    alias :help_menu? :isHelpMenu
-
-    def setHelpMenu(value)
-      @helpMenu = value
-    end
-
-    alias :helpMenu= :setHelpMenu
-    alias :help_menu= :setHelpMenu
 
     def items
       @menuItems
     end
-
-    def menu
-      @menu
-    end
-
-    def builder
-      @builder
-    end
-
-    def isMainMenu
-      @needsMenuItem
-    end
-
-    alias :mainMenu :isMainMenu
-    alias :main_menu? :isMainMenu
-
-    def setMainMenu(value)
-      @needsMenuItem = value
-    end
-
-    alias :main_menu= :setMainMenu
   end
 
   class MenuItemList

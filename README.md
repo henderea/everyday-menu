@@ -1,7 +1,8 @@
 # EverydayMenu
 
 ## Updates
-Please see the "Introducing Presets!" section below for an awesome new feature!
+* Please see the "Introducing Presets!" section below for an awesome new feature!
+* Please see the "Introducing Statusbar Menus!" section below for another awesome new feature!
 
 ## Issue Tracking
 Please use <https://everydayprogramminggenius.atlassian.net/browse/EM> for issue tracking.
@@ -176,6 +177,35 @@ EverydayMenu::MenuItem.definePreset(:services) { |item|
 ```
 
 Any block you pass to `item.registerOnBuild(&block)` will be added to a list of blocks to be run when the menu setup is built.
+
+## Introducing Statusbar Menus!
+As of version 1.0.0, `everyday-menu` now supports creating statusbar menus.  With this addition, I believe I have finally matched all of the important features of `drink-menu`.
+
+Here's how you can make a menu be for the statusbar icon:
+
+```ruby
+class MainMenu
+  extend EverydayMenu::MenuBuilder
+  
+  menuItem :status_open, 'Open', key_equivalent: 'o'
+  menuItem :status_new, 'New'
+  menuItem :status_close, 'Close', key_equivalent: 'w'
+  menuItem :status_quit, 'Quit', preset: :quit
+
+  statusbarMenu(:statusbar, 'Statusbar Menu', status_item_icon: 'icon', status_item_view_class: ViewClass) {
+    status_new
+    status_open
+    ___
+    status_close
+    ___
+    status_quit
+  }
+end
+```
+
+This will create a statusbar menu with the specified title, icon, and view class.
+
+You can also create a statusbar menu by using the key `status_item_title:`, `status_item_icon:`, and/or `status_item_view_class:` in a regular (non-main) menu.  Other than the addition of these parameters, a statusbar menu has all of the same parameters as a regular menu.
 
 
 ## Known Issues

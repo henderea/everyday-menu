@@ -45,6 +45,13 @@ module EverydayMenu
       @menus[label]       = Menu.create(label, title, options, &block)
     end
 
+    def statusbarMenu(label, title, options = {}, &block)
+      options[:main_menu]         = false
+      options[:status_item_title] = title unless options.has_key?(:status_item_title)
+      @menus                      ||= {}
+      @menus[label]               = Menu.create(label, title, options, &block)
+    end
+
     def [](label)
       @menus[label]
     end
