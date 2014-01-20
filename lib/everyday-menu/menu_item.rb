@@ -108,6 +108,61 @@ module EverydayMenu
     alias :keyEquivalentModifierMask= :setKeyEquivalentModifierMask
     alias :key_equivalent_modifier_mask= :setKeyEquivalentModifierMask
 
+    def setPreset(action)
+      @@presets ||= {}
+      if @@presets.has_key?(action)
+        @@presets[action].call(self)
+      end
+    end
+
+    def self.definePreset(label, &block)
+      @@presets        ||= {}
+      @@presets[label] = block
+    end
+
+    definePreset(:hide) { |item|
+      item[:key_equivalent] = 'h'
+      item.subscribe { |_, _| NSApp.hide(item) }
+    }
+
+    definePreset(:hide_others) { |item|
+      item[:key_equivalent]               = 'H'
+      item[:key_equivalent_modifier_mask] = NSCommandKeyMask|NSAlternateKeyMask
+      item.subscribe { |_, _| NSApp.hideOtherApplications(item) }
+    }
+
+    definePreset(:show_all) { |item|
+      item.subscribe { |_, _| NSApp.unhideAllApplications(item) }
+    }
+
+    definePreset(:quit) { |item|
+      item[:key_equivalent] = 'q'
+      item.subscribe { |_, _| NSApp.terminate(item) }
+    }
+
+    definePreset(:close) { |item|
+      item[:key_equivalent] = 'w'
+      item.subscribe { |_, _| NSApp.keyWindow.performClose(item) }
+    }
+
+    definePreset(:services) { |item|
+      item[:submenu] = Menu.create(:services_menu, item[:title], services_menu: true)
+      item.registerOnBuild { NSApp.servicesMenu = item[:submenu] }
+    }
+
+    def runOnBuild
+      onBuild.each { |block| block.call }
+    end
+
+    def onBuild
+      @onBuild ||= []
+    end
+
+    def registerOnBuild(&block)
+      @onBuild ||= []
+      @onBuild << block
+    end
+
     def subscribe(&block)
       @menuItem.subscribe(self.label, &block)
     end

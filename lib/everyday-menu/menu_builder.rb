@@ -57,15 +57,7 @@ module EverydayMenu
           @mainMenu ||= NSMenu.new
           @mainMenu.addItem menu.menuItemFromMenu!.menuItem
         end
-        if menu.is :services_menu
-          NSApp.servicesMenu = menu.menu
-        end
-        if menu.is :windows_menu
-          NSApp.windowsMenu = menu.menu
-        end
-        if menu.is :help_menu
-          NSApp.helpMenu = menu.menu
-        end
+        menu.runOnBuild
       end
       setupMainMenu if @mainMenu
     end

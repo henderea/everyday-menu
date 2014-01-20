@@ -1,5 +1,8 @@
 # EverydayMenu
 
+## Updates
+Please see the "Introducing Presets!" section below for an awesome new feature!
+
 ## Issue Tracking
 Please use <https://everydayprogramminggenius.atlassian.net/browse/EM> for issue tracking.
 
@@ -94,6 +97,87 @@ class AppDelegate
   end
 end
 ```
+
+You can even put multiple actions on a single item by calling subscribe multiple times.
+
+## Introducing Presets!
+With version 0.4.0, I have added the capability to use some presets.  Here is the above example with presets:
+
+```ruby
+class MainMenu
+  extend EverydayMenu::MenuBuilder
+
+  menuItem :hide_others, 'Hide Others', preset: :hide_others
+  menuItem :show_all, 'Show All', preset: :show_all
+  menuItem :quit, 'Quit', preset: :quit
+
+  menuItem :services_item, 'Services', preset: :services
+
+  menuItem :open, 'Open', key_equivalent: 'o'
+  menuItem :new, 'New'
+  menuItem :close, 'Close', key_equivalent: 'w'
+end
+```
+
+with actions defined as:
+
+```ruby
+class AppDelegate
+  def applicationDidFinishLaunching(notification)
+    @has_open = false
+    MainMenu.build!
+
+    MainMenu[:file].subscribe(:new) { |_, _|
+      @has_open = true
+      puts 'new'
+    }
+    MainMenu[:file].subscribe(:close) { |_, _|
+      @has_open = false
+      puts 'close'
+    }.canExecuteBlock { |_| @has_open }
+    MainMenu[:file].subscribe(:open) { |_, _|
+      @has_open = true
+      puts 'open'
+    }
+  end
+end
+```
+
+I didn't use a preset for close because there was special handling.  Here are the presets and what they do:
+
+Preset | Settings | Action
+--------|-----------------------|------------------------------
+`:hide` | `key_equivalent: 'h'` | <code>{ &#124;_, _&#124; NSApp.hide(self) }</code>
+`:hide_others` | `key_equivalent: 'H'` <br> and <br> <code>:key\_equivalent\_modifier_mask: NSCommandKeyMask&#124;NSAlternateKeyMask</code> | <code>{ &#124;_, _&#124; NSApp.hideOtherApplications(self) }</code>
+`:show_all` | none | <code>{ &#124;_, _&#124; NSApp.unhideAllApplications(self) }</code>
+`:quit` | `key_equivalent: 'q'` | <code>{ &#124;_, _&#124; NSApp.terminate(self) }</code>
+`:close` | `key_equivalent: 'w'` | <code>{ &#124;_, _&#124; NSApp.keyWindow.performClose(self) }</code>
+`:services` | `submenu: (menu :services, <item-title>, services_menu: true)` | none
+
+Let me know if you have any others you think I should add.  If you want to add one of your own, I have included the ability to define presets.  You will want to do this at the top of the file where you setup your menu items.  Here is an example:
+
+```ruby
+EverydayMenu::MenuItem.definePreset(:hide_others) { |item|
+  item[:key_equivalent]               = 'H'
+  item[:key_equivalent_modifier_mask] = NSCommandKeyMask|NSAlternateKeyMask
+  item.subscribe { |_, _| NSApp.hideOtherApplications(item) }
+}
+```
+
+Since the block is being run after the item instance is created, you have to use the other syntax, `item[<key>]=` in order to set the values.  If you want to create a submenu in this, you can use `EverydayMenu::Menu.create(label, title, options = {})`, which accepts the same parameters as the `menu` method when building the menu normally.
+
+If you set some application property (like `NSApp.servicesMenu`) in your method, you should probably have that delayed until the whole menu setup is built.  You can do that like this:
+
+```ruby
+EverydayMenu::MenuItem.definePreset(:services) { |item|
+  item[:submenu] = Menu.create(:services_menu, item[:title], services_menu: true)
+  item.registerOnBuild { NSApp.servicesMenu = item[:submenu] }
+}
+```
+
+Any block you pass to `item.registerOnBuild(&block)` will be added to a list of blocks to be run when the menu setup is built.
+
+
 ## Known Issues
 
 Here are known issues.  If you encounter one, please log a bug ticket in the issue tracker (link above)

@@ -83,6 +83,19 @@ module EverydayMenu
       prefix.nil? ? rval : "#{prefix}#{rval[0].upcase}#{rval[1..-1]}"
     end
 
+    def runOnBuild
+      if self.is :services_menu
+        NSApp.servicesMenu = self.menu
+      end
+      if self.is :windows_menu
+        NSApp.windowsMenu = self.menu
+      end
+      if self.is :help_menu
+        NSApp.helpMenu = self.menu
+      end
+      @menuItems.each { |item| item.runOnBuild }
+    end
+
     def label
       @label ||= nil
     end
@@ -193,5 +206,9 @@ module EverydayMenu
     end
 
     alias :select_item_by_member :selectItemByMember
+
+    def each(&block)
+      @menuItems.values.each(&block)
+    end
   end
 end
