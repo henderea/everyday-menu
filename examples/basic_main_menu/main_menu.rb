@@ -10,6 +10,7 @@ class MainMenu
   menuItem :open, 'Open', key_equivalent: 'o'
   menuItem :new, 'New'
   menuItem :close, 'Close', key_equivalent: 'w'
+  menuItem :start_stop, 'Start'
 
   menuItem :status_open, 'Open', key_equivalent: 'o'
   menuItem :status_new, 'New'
@@ -31,6 +32,8 @@ class MainMenu
     open
     ___
     close
+    ___
+    start_stop
   }
 
   statusbarMenu(:statusbar, 'Statusbar Menu') {

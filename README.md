@@ -1,8 +1,10 @@
 # EverydayMenu
 
 ## Updates
-* Please see the "Introducing Presets!" section below for an awesome new feature!
-* Please see the "Introducing Statusbar Menus!" section below for another awesome new feature!
+* 0.4.0:
+    * Please see the "Introducing Presets!" section below for an awesome new feature!
+* 1.0.0:
+    * Please see the "Introducing Statusbar Menus!" section below for another awesome new feature!
 
 ## Issue Tracking
 Please use <https://everydayprogramminggenius.atlassian.net/browse/EM> for issue tracking.
@@ -44,6 +46,7 @@ class MainMenu
   menuItem :open, 'Open', key_equivalent: 'o'
   menuItem :new, 'New'
   menuItem :close, 'Close', key_equivalent: 'w'
+  menuItem :start_stop, 'Start'
 end
 
 ```
@@ -67,6 +70,8 @@ class MainMenu
     open
     ___
     close
+    ___
+    start_stop
   }
 end
 ```
@@ -79,8 +84,12 @@ class AppDelegate
     MainMenu.build!
 
     MainMenu[:app].subscribe(:hide_others) { |_, _| NSApp.hideOtherApplications(self) }
-    MainMenu[:app].subscribe(:quit) { |_, _| NSApp.terminate(self) }
+    MainMenu[:app].subscribe(:quit) { |_, _| NSApp.terminate(self) }    
 
+    MainMenu[:file].subscribe(:start_stop) { |command, _|
+      @started               = !@started
+      command.parent[:title] = @started ? 'Stop' : 'Start'
+    }
     MainMenu[:file].subscribe(:new) { |_, _|
       @has_open = true
       puts 'new'
@@ -100,6 +109,8 @@ end
 ```
 
 You can even put multiple actions on a single item by calling subscribe multiple times.
+
+The block passed to `subscribe` takes two parameters, the command instance and the sender.  The command instance has knowledge of the label (`command.label`) and (as of version 1.1.0) the parent `EverydayMenu::MenuItem` instance (`command.parent`).  In the above example, the parent instance is used to toggle the menu item text between 'Start' and 'Stop'.
 
 ## Introducing Presets!
 With version 0.4.0, I have added the capability to use some presets.  Here is the above example with presets:

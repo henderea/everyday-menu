@@ -1,6 +1,7 @@
 class AppDelegate
   def applicationDidFinishLaunching(notification)
     @has_open = false
+    @started  = false
     MainMenu.build!
 
     MainMenu[:file].subscribe(:new) { |_, _|
@@ -14,6 +15,10 @@ class AppDelegate
     MainMenu[:file].subscribe(:open) { |_, _|
       @has_open = true
       puts 'open'
+    }
+    MainMenu[:file].subscribe(:start_stop) { |command, _|
+      @started               = !@started
+      command.parent[:title] = @started ? 'Stop' : 'Start'
     }
     MainMenu[:statusbar].subscribe(:status_new) { |_, _|
       @has_open = true
