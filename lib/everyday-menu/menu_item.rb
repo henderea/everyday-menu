@@ -120,8 +120,8 @@ module EverydayMenu
       @onBuild << block
     end
 
-    def subscribe(&block)
-      @menuItem.subscribe(self, self.label, &block)
+    def subscribe(command_id = nil, &block)
+      @menuItem.subscribe(self, self.label, command_id, &block)
     end
 
     def execute
@@ -133,9 +133,9 @@ end
 class NSMenuItem
   attr_reader :commands
 
-  def subscribe(parent, label, &block)
+  def subscribe(parent, label, command_id = nil, &block)
     @commands ||= EverydayMenu::CommandList.new(parent, label)
-    @commands.add &block
+    @commands.add command_id, &block
     command      = @commands.last
     self.enabled = @commands.canExecute
     unless @boundEnabled

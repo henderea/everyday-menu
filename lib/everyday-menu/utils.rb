@@ -1,18 +1,20 @@
 module EverydayMenu
   class EverydayCommand
-    attr_reader :label, :parent
+    attr_reader :label, :parent, :command_id
     attr_writer :canExecute
 
-    def initialize(parent, label, canExecute = true, &block)
+    def initialize(parent, label, command_id = nil, canExecute = true, &block)
       @parent          = parent
       @label           = label
       @block           = block
+      @command_id      = command_id
       @canExecute      = canExecute
       @canExecuteBlock = nil
     end
 
     def canExecuteBlock(&block)
       @canExecuteBlock = block
+      self
     end
 
     def canExecute
@@ -33,8 +35,8 @@ module EverydayMenu
       @items  = []
     end
 
-    def add(&block)
-      @items << EverydayCommand.new(@parent, @label, &block)
+    def add(command_id = nil, &block)
+      @items << EverydayCommand.new(@parent, @label, command_id, &block)
     end
 
     def last

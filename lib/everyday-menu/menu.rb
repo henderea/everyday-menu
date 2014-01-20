@@ -48,8 +48,8 @@ module EverydayMenu
 
     alias :menu_item :menuItem
 
-    def subscribe(label, &block)
-      self.items[label].subscribe(&block)
+    def subscribe(label, command_id = nil, &block)
+      self.items[label].subscribe(command_id, &block)
     end
 
     def <<(item)

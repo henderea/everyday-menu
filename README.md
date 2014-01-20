@@ -86,9 +86,13 @@ class AppDelegate
     MainMenu[:app].subscribe(:hide_others) { |_, _| NSApp.hideOtherApplications(self) }
     MainMenu[:app].subscribe(:quit) { |_, _| NSApp.terminate(self) }    
 
-    MainMenu[:file].subscribe(:start_stop) { |command, _|
+    MainMenu[:file].subscribe(:start_stop, :start_stop_command_id) { |command, _|
       @started               = !@started
       command.parent[:title] = @started ? 'Stop' : 'Start'
+      puts "subscribe 1 command id: #{command.command_id}"
+    }
+    MainMenu[:file].subscribe(:start_stop, :start_stop_command_id2) { |command, _|
+      puts "subscribe 2 command id: #{command.command_id}"
     }
     MainMenu[:file].subscribe(:new) { |_, _|
       @has_open = true
