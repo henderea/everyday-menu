@@ -95,6 +95,10 @@ module EverydayMenu
       def self.setup_obj(obj, label, title, options)
         obj[:label] = label
         obj[:title] = title
+        fill_options(obj, options)
+      end
+
+      def self.fill_options(obj, options)
         options.each { |option| obj[option[0]] = option[1] }
       end
 

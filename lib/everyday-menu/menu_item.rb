@@ -82,6 +82,10 @@ module EverydayMenu
       def_services_preset
     end
 
+    def self.fill_preset(item, options = {})
+      fill_options(item, options)
+    end
+
     def self.def_hide_preset
       definePreset(:hide) { |item|
         item[:key_equivalent] = 'h'
