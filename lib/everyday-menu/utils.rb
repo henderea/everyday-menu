@@ -127,19 +127,21 @@ module EverydayMenu
 
       def self.def_getter(name, do_is = false)
         var_name, isName, name2 = getter_names(name)
-        define_method(name) { self.instance_variable_get(var_name) }
-        define_method(name2) { self.instance_variable_get(var_name) }
+        block                   = ->() { self.instance_variable_get(var_name) }
+        define_method(name, &block)
+        define_method(name2, &block)
         if do_is
-          define_method(isName) { self.instance_variable_get(var_name) }
-          define_method(:"#{name2.to_s}?") { self.instance_variable_get(var_name) }
+          define_method(isName, &block)
+          define_method(:"#{name2.to_s}?", &block)
         end
       end
 
       def self.def_setter(name)
         var_name, setName, name2 = setter_names(name)
-        define_method(:"#{name.to_s}=") { |val| self.instance_variable_set(var_name, val) }
-        define_method(setName) { |val| self.instance_variable_set(var_name, val) }
-        define_method(:"#{name2.to_s}=") { |val| self.instance_variable_set(var_name, val) }
+        block                    = ->(val) { self.instance_variable_set(var_name, val) }
+        define_method(:"#{name.to_s}=", &block)
+        define_method(setName, &block)
+        define_method(:"#{name2.to_s}=", &block)
       end
 
       def self.my_attr_accessor(*names)
