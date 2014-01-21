@@ -35,13 +35,3 @@ Motion::Project::App.setup do |app|
     app.files << Dir["examples/#{ENV['example']}/**/*.rb"]
   end
 end
-
-if ARGV[0] == 'spec'
-  require_relative 'lib/everyday-menu/utils'
-  require_relative 'lib/everyday-menu/menu_item'
-  require_relative 'lib/everyday-menu/menu'
-  require_relative 'lib/everyday-menu/menu_builder'
-  require_relative 'spec/menu_item_spec'
-  require_relative 'spec/menu_spec'
-  require_relative 'spec/menu_builder_spec'
-end
