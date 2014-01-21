@@ -1,6 +1,7 @@
 # EverydayMenu
 
 [![Gem Version](https://badge.fury.io/rb/everyday-menu.png)](http://badge.fury.io/rb/everyday-menu)
+[![Build Status](https://travis-ci.org/henderea/everyday-menu.png?branch=master)](https://travis-ci.org/henderea/everyday-menu)
 
 ## Updates
 * 0.2.0:
