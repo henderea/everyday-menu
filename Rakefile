@@ -1,6 +1,17 @@
 $:.unshift('/Library/RubyMotion/lib')
 
-ENV['platform'] = 'osx' if ARGV[0] == 'spec'
+if ARGV[0] == 'spec'
+  ENV['platform'] = 'osx'
+  begin
+    require 'simplecov'
+    SimpleCov.start
+  rescue LoadError
+# ignored
+  end
+
+  require 'coveralls'
+  Coveralls.wear!
+end
 
 if ENV['platform'] == 'osx'
   require 'motion/project/template/osx'
@@ -13,6 +24,14 @@ begin
   Bundler.require
 rescue LoadError
 # ignored
+end
+
+if ARGV[0] == 'spec'
+  begin
+    Bundler.require(:default, :test)
+  rescue LoadError
+# ignored
+  end
 end
 
 Motion::Project::App.setup do |app|
