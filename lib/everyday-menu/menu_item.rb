@@ -74,31 +74,50 @@ module EverydayMenu
     end
 
     def self.def_presets
+      def_hide_preset
+      def_hide_others_preset
+      def_show_all_preset
+      def_quit_preset
+      def_close_preset
+      def_services_preset
+    end
+
+    def self.def_hide_preset
       definePreset(:hide) { |item|
         item[:key_equivalent] = 'h'
         item.subscribe { |_, _| NSApp.hide(item) }
       }
+    end
 
+    def self.def_hide_others_preset
       definePreset(:hide_others) { |item|
         item[:key_equivalent]               = 'H'
         item[:key_equivalent_modifier_mask] = NSCommandKeyMask|NSAlternateKeyMask
         item.subscribe { |_, _| NSApp.hideOtherApplications(item) }
       }
+    end
 
+    def self.def_show_all_preset
       definePreset(:show_all) { |item|
         item.subscribe { |_, _| NSApp.unhideAllApplications(item) }
       }
+    end
 
+    def self.def_quit_preset
       definePreset(:quit) { |item|
         item[:key_equivalent] = 'q'
         item.subscribe { |_, _| NSApp.terminate(item) }
       }
+    end
 
+    def self.def_close_preset
       definePreset(:close) { |item|
         item[:key_equivalent] = 'w'
         item.subscribe { |_, _| NSApp.keyWindow.performClose(item) }
       }
+    end
 
+    def self.def_services_preset
       definePreset(:services) { |item|
         item[:submenu] = Menu.create(:services_menu, item[:title], services_menu: true)
         item.registerOnBuild { NSApp.servicesMenu = item[:submenu] }

@@ -58,15 +58,21 @@ module EverydayMenu
 
     def build!
       @menus.values.each do |menu|
-        context = Context.new(menu, @menuItems.dup)
-        context.instance_eval(&menu.builder) if menu.builder
-        if menu.is :main_menu
-          @mainMenu ||= NSMenu.new
-          @mainMenu.addItem menu.menuItemFromMenu!.menuItem
-        end
+        build_menu(menu)
+        add_main_menu(menu) if menu.is :main_menu
         menu.runOnBuild
       end
       setupMainMenu if @mainMenu
+    end
+
+    def build_menu(menu)
+      context = Context.new(menu, @menuItems.dup)
+      context.instance_eval(&menu.builder) if menu.builder
+    end
+
+    def add_main_menu(menu)
+      @mainMenu ||= NSMenu.new
+      @mainMenu.addItem menu.menuItemFromMenu!.menuItem
     end
 
     private
