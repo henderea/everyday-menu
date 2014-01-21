@@ -5,7 +5,6 @@ if ARGV[0] == 'spec'
   ENV['platform'] = 'osx'
   begin
     require 'simplecov'
-    SimpleCov.start
   rescue LoadError
 # ignored
   end
@@ -35,4 +34,9 @@ Motion::Project::App.setup do |app|
   if ENV['example']
     app.files << Dir["examples/#{ENV['example']}/**/*.rb"]
   end
+end
+
+if ARGV[0] == 'spec'
+  Dir.glob(File.join(File.dirname(__FILE__), 'lib/everyday-menu/**/*.rb')).each { |file| require file }
+  Dir.glob(File.join(File.dirname(__FILE__), 'spec/**/*.rb')).each { |file| require file }
 end
