@@ -3,18 +3,32 @@
 [![Gem Version](https://badge.fury.io/rb/everyday-menu.png)](http://badge.fury.io/rb/everyday-menu)
 
 ## Updates
+* 0.2.0:
+    * Create `EverydayCommand` to allow control of enablement of menu items
+* 0.2.1:
+    * Fix a set method issue and resolve the error messages about missing methods
+* 0.3.0:
+    * Add handling for `NSApp.servicesMenu`, `NSApp.windowsMenu`, and `NSApp.helpMenu`
 * 0.4.0:
     * Please see the "Introducing Presets!" section below for an awesome new feature!
 * 1.0.0:
     * Please see the "Introducing Statusbar Menus!" section below for another awesome new feature!
+* 1.1.0:
+    * Added reference to parent `MenuItem` instance to `EverydayCommand`
+* 1.2.0:
+    * Added the ability to have individual ids for each command
+* 1.3.0:
+    * Commands now get a random id if you don't give them one
+    * You can now access a command by id
+    * I now have a runtime dependency, the gem `rm-digest`, but it has the necessary objective-c code built-in, so there shouldn't be any extra work for users of `everyday-menu`
 
 ## Issue Tracking
 Please use <https://everydayprogramminggenius.atlassian.net/browse/EM> for issue tracking.
 
 ## Credit
-Please note that this gem is strongly based off of Joe Fiorini's `drink-menu` gem (with a little code copy-paste and lots of test and readme copy-paste), which I couldn't get to work for me.
+Please note that this gem is based off of Joe Fiorini's `drink-menu` gem (with a little code copy-paste and lots of test and readme copy-paste), which I couldn't get to work for me.
 
-You can find his gem at <https://github.com/joefiorini/drink-menu>.  He doesn't get all of the credit, but he gets a lot of it.
+You can find his gem at <https://github.com/joefiorini/drink-menu>.  He doesn't get all of the credit, but he gets a fair amount of it.
 
 ## Installation
 
@@ -106,10 +120,15 @@ class AppDelegate
       puts 'close'
     }.canExecuteBlock { |_| @has_open }
 
-    MainMenu[:file].subscribe(:open) { |_, _|
+    MainMenu[:file].subscribe(:open) { |command, _|
       @has_open = true
       puts 'open'
+      puts "open subscribe 1 command id: #{command.command_id}"
     }
+    MainMenu[:file].subscribe(:open) { |command, _|
+      puts "open subscribe 2 command id: #{command.command_id}"
+    }
+    puts "start_stop subscribe 1 parent label: #{MainMenu[:file].items[:start_stop][:commands][:start_stop_command_id].label}"
   end
 end
 ```

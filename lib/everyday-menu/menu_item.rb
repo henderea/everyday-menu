@@ -127,6 +127,10 @@ module EverydayMenu
     def execute
       @menuItem.runBlock(self)
     end
+
+    def commands
+      @commands ||= EverydayMenu::CommandList.new(self, self.label)
+    end
   end
 end
 
@@ -134,10 +138,9 @@ class NSMenuItem
   attr_reader :commands
 
   def subscribe(parent, label, command_id = nil, &block)
-    @commands ||= EverydayMenu::CommandList.new(parent, label)
-    @commands.add command_id, &block
-    command      = @commands.last
-    self.enabled = @commands.canExecute
+    @commands    ||= parent.commands
+    command      = parent.commands.add command_id, &block
+    self.enabled = parent.commands.canExecute
     unless @boundEnabled
       @boundEnabled = true
       self.bind(NSEnabledBinding, toObject: self.commands, withKeyPath: 'canExecute', options: nil)

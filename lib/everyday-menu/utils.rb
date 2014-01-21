@@ -1,3 +1,7 @@
+class EverydayRmDigest
+  include RmDigest
+end
+
 module EverydayMenu
   class EverydayCommand
     attr_reader :label, :parent, :command_id
@@ -32,11 +36,25 @@ module EverydayMenu
     def initialize(parent, label)
       @parent = parent
       @label  = label
-      @items  = []
+      @items  = {}
+      @rand   = Random.new
+    end
+
+    def unique_id
+      EverydayRmDigest::MD5.hexdigest("#{@rand.rand}#{@rand.rand}")
+    end
+
+    def rand_id
+      :"command_id_#{unique_id}"
     end
 
     def add(command_id = nil, &block)
-      @items << EverydayCommand.new(@parent, @label, command_id, &block)
+      id         = command_id || rand_id
+      @items[id] = EverydayCommand.new(@parent, @label, id, &block)
+    end
+
+    def [](id)
+      @items[id]
     end
 
     def last
@@ -44,11 +62,11 @@ module EverydayMenu
     end
 
     def execute(sender)
-      @items.each { |item| item.execute(sender) }
+      @items.values.each { |item| item.execute(sender) }
     end
 
     def canExecute
-      @items.any? { |item| item.canExecute }
+      @items.values.any? { |item| item.canExecute }
     end
   end
 
