@@ -82,22 +82,20 @@ module EverydayMenu
       def_services_preset
     end
 
-    def self.fill_preset(item, options = {})
+    def self.fill_preset(item, options = {}, &block)
       fill_options(item, options)
+      item.subscribe &block
     end
 
     def self.def_hide_preset
       definePreset(:hide) { |item|
-        item[:key_equivalent] = 'h'
-        item.subscribe { |_, _| NSApp.hide(item) }
+        fill_preset(item, key_equivalent: 'h') { |_, _| NSApp.hide(item) }
       }
     end
 
     def self.def_hide_others_preset
       definePreset(:hide_others) { |item|
-        item[:key_equivalent]               = 'H'
-        item[:key_equivalent_modifier_mask] = NSCommandKeyMask|NSAlternateKeyMask
-        item.subscribe { |_, _| NSApp.hideOtherApplications(item) }
+        fill_preset(item, key_equivalent: 'H', key_equivalent_modifier_mask: NSCommandKeyMask|NSAlternateKeyMask) { |_, _| NSApp.hideOtherApplications(item) }
       }
     end
 
@@ -109,15 +107,13 @@ module EverydayMenu
 
     def self.def_quit_preset
       definePreset(:quit) { |item|
-        item[:key_equivalent] = 'q'
-        item.subscribe { |_, _| NSApp.terminate(item) }
+        fill_preset(item, key_equivalent: 'q') { |_, _| NSApp.terminate(item) }
       }
     end
 
     def self.def_close_preset
       definePreset(:close) { |item|
-        item[:key_equivalent] = 'w'
-        item.subscribe { |_, _| NSApp.keyWindow.performClose(item) }
+        fill_preset(item, key_equivalent: 'w') { |_, _| NSApp.keyWindow.performClose(item) }
       }
     end
 
