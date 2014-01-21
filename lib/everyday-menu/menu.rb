@@ -2,20 +2,18 @@ module EverydayMenu
   class Menu
     include MyAccessors
 
-    my_attr_writer :label
+    def self.def_accessors
+      my_attr_writer :label
+      my_attr_accessor_bool :servicesMenu, :windowsMenu, :helpMenu, :mainMenu
+      my_attr_reader_bool :statusMenu
+      my_attr_reader :statusItemTitle, :statusItemIcon, :statusItemViewClass
+      attr_reader :menu, :builder
+    end
 
-    my_attr_accessor_bool :servicesMenu, :windowsMenu, :helpMenu, :mainMenu
-
-    my_attr_reader_bool :statusMenu
-
-    my_attr_reader :statusItemTitle, :statusItemIcon, :statusItemViewClass
-
-    attr_reader :menu, :builder
+    def_accessors
 
     def self.create(label, title, options = {}, &block)
-      new(label, &block).tap { |menu|
-        setup_obj(menu, label, title, options)
-      }
+      new(label, &block).tap { |menu| setup_obj(menu, label, title, options) }
     end
 
     def initialize(label, &block)
@@ -69,10 +67,14 @@ module EverydayMenu
       @@buildBlocks[field] = block
     end
 
-    registerBuildBlock(:services_menu) { |menu| NSApp.servicesMenu = menu.menu }
-    registerBuildBlock(:windows_menu) { |menu| NSApp.windowsMenu = menu.menu }
-    registerBuildBlock(:help_menu) { |menu| NSApp.helpMenu = menu.menu }
-    registerBuildBlock(:status_menu) { |menu| menu.createStatusItem! }
+    def self.def_build_blocks
+      registerBuildBlock(:services_menu) { |menu| NSApp.servicesMenu = menu.menu }
+      registerBuildBlock(:windows_menu) { |menu| NSApp.windowsMenu = menu.menu }
+      registerBuildBlock(:help_menu) { |menu| NSApp.helpMenu = menu.menu }
+      registerBuildBlock(:status_menu) { |menu| menu.createStatusItem! }
+    end
+
+    def_build_blocks
 
     def label
       @label ||= nil
@@ -84,26 +86,17 @@ module EverydayMenu
       @statusMenu      = true unless title.nil?
     end
 
-    alias :statusItemTitle= :setStatusItemTitle
-    alias :status_item_title= :setStatusItemTitle
-
     def setStatusItemIcon(icon)
       @mainMenu       = false unless icon.nil?
       @statusItemIcon = icon
       @statusMenu     = true unless icon.nil?
     end
 
-    alias :statusItemIcon= :setStatusItemIcon
-    alias :status_item_icon= :setStatusItemIcon
-
     def setStatusItemViewClass(viewClass)
       @mainMenu            = false unless viewClass.nil?
       @statusItemViewClass = viewClass
       @statusMenu          = true unless viewClass.nil?
     end
-
-    alias :statusItemViewClass= :setStatusItemViewClass
-    alias :status_item_view_class= :setStatusItemViewClass
 
     def createStatusItem!
       statusBar                 = NSStatusBar.systemStatusBar
@@ -132,6 +125,19 @@ module EverydayMenu
       item = self.items[label]
       item.execute
     end
+
+    def self.def_aliases
+      alias :statusItemTitle= :setStatusItemTitle
+      alias :status_item_title= :setStatusItemTitle
+
+      alias :statusItemIcon= :setStatusItemIcon
+      alias :status_item_icon= :setStatusItemIcon
+
+      alias :statusItemViewClass= :setStatusItemViewClass
+      alias :status_item_view_class= :setStatusItemViewClass
+    end
+
+    def_aliases
   end
 
   class MenuItemList

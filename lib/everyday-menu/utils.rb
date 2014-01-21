@@ -76,23 +76,19 @@ module EverydayMenu
     end
 
     def has(key)
-      name = self.class.key_to_name(key, 'has')
-      get_val(name)
+      get_val(self.class.key_to_name(key, 'has'))
     end
 
     def is(key)
-      name = self.class.key_to_name(key, 'is')
-      get_val(name)
+      get_val(self.class.key_to_name(key, 'is'))
     end
 
     def [](key)
-      name = self.class.key_to_name(key)
-      get_val(name)
+      get_val(self.class.key_to_name(key))
     end
 
     def []=(key, value)
-      name = self.class.key_to_name(key, 'set')
-      set_val(name, value)
+      set_val(self.class.key_to_name(key, 'set'), value)
     end
 
     class << self
@@ -132,25 +128,21 @@ module EverydayMenu
         return name2, var_name
       end
 
+      def self.define_methods(*names, &block)
+        names.each { |name| define_method(name, &block) }
+      end
+
       def self.def_getter(name, do_is = false)
         var_name, isName, name2, name2_is = getter_names(name)
         block                             = ->() { self.instance_variable_get(var_name) }
-        define_method(name, &block)
-        define_method(name2, &block)
-        def_getter_is(isName, name2_is, &block) if do_is
-      end
-
-      def self.def_getter_is(isName, name2_is, &block)
-        define_method(isName, &block)
-        define_method(name2_is, &block)
+        define_methods(name, name2, &block)
+        define_methods(isName, name2_is, &block) if do_is
       end
 
       def self.def_setter(name)
         var_name, setName, name_e, name2_e = setter_names(name)
         block                              = ->(val) { self.instance_variable_set(var_name, val) }
-        define_method(name_e, &block)
-        define_method(setName, &block)
-        define_method(name2_e, &block)
+        define_methods(name_e, setName, name2_e, &block)
       end
 
       def self.my_attr_accessor(*names)

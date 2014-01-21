@@ -3,9 +3,7 @@ module EverydayMenu
     include MyAccessors
 
     def self.create(label, title, options = {})
-      new.tap { |item|
-        setup_obj(item, label, title, options)
-      }
+      new.tap { |item| setup_obj(item, label, title, options) }
     end
 
     def self.separator
@@ -75,35 +73,39 @@ module EverydayMenu
       @@presets[label] = block
     end
 
-    definePreset(:hide) { |item|
-      item[:key_equivalent] = 'h'
-      item.subscribe { |_, _| NSApp.hide(item) }
-    }
+    def self.def_presets
+      definePreset(:hide) { |item|
+        item[:key_equivalent] = 'h'
+        item.subscribe { |_, _| NSApp.hide(item) }
+      }
 
-    definePreset(:hide_others) { |item|
-      item[:key_equivalent]               = 'H'
-      item[:key_equivalent_modifier_mask] = NSCommandKeyMask|NSAlternateKeyMask
-      item.subscribe { |_, _| NSApp.hideOtherApplications(item) }
-    }
+      definePreset(:hide_others) { |item|
+        item[:key_equivalent]               = 'H'
+        item[:key_equivalent_modifier_mask] = NSCommandKeyMask|NSAlternateKeyMask
+        item.subscribe { |_, _| NSApp.hideOtherApplications(item) }
+      }
 
-    definePreset(:show_all) { |item|
-      item.subscribe { |_, _| NSApp.unhideAllApplications(item) }
-    }
+      definePreset(:show_all) { |item|
+        item.subscribe { |_, _| NSApp.unhideAllApplications(item) }
+      }
 
-    definePreset(:quit) { |item|
-      item[:key_equivalent] = 'q'
-      item.subscribe { |_, _| NSApp.terminate(item) }
-    }
+      definePreset(:quit) { |item|
+        item[:key_equivalent] = 'q'
+        item.subscribe { |_, _| NSApp.terminate(item) }
+      }
 
-    definePreset(:close) { |item|
-      item[:key_equivalent] = 'w'
-      item.subscribe { |_, _| NSApp.keyWindow.performClose(item) }
-    }
+      definePreset(:close) { |item|
+        item[:key_equivalent] = 'w'
+        item.subscribe { |_, _| NSApp.keyWindow.performClose(item) }
+      }
 
-    definePreset(:services) { |item|
-      item[:submenu] = Menu.create(:services_menu, item[:title], services_menu: true)
-      item.registerOnBuild { NSApp.servicesMenu = item[:submenu] }
-    }
+      definePreset(:services) { |item|
+        item[:submenu] = Menu.create(:services_menu, item[:title], services_menu: true)
+        item.registerOnBuild { NSApp.servicesMenu = item[:submenu] }
+      }
+    end
+
+    def_presets
 
     def runOnBuild
       onBuild.each { |block| block.call }
