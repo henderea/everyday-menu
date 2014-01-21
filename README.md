@@ -20,7 +20,9 @@
 * 1.3.0:
     * Commands now get a random id if you don't give them one
     * You can now access a command by id
-    * I now have a runtime dependency, the gem `rm-digest`, but it has the necessary objective-c code built-in, so there shouldn't be any extra work for users of `everyday-menu`
+    * I now have a runtime dependency, the gem `rm-digest`, but it has the necessary objective-c code built-in, so     there shouldn't be any extra work for users of `everyday-menu`
+* 1.3.1:
+    * Oops, I forgot to test outside the gem before releasing.  The dependency issue should be fixed now.
 
 ## Issue Tracking
 Please use <https://everydayprogramminggenius.atlassian.net/browse/EM> for issue tracking.

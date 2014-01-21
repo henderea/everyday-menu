@@ -1,3 +1,6 @@
+require 'rm-digest'
+require 'rm-digest/md5'
+
 unless defined?(Motion::Project::Config)
   raise 'The everyday-menu gem must be required within a RubyMotion project Rakefile.'
 end
