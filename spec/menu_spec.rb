@@ -40,7 +40,7 @@ describe 'creating menus' do
 
     menu << item
 
-    menu[item.label].should.equal item
+    menu.items[item.label].should.equal item
   end
 
   it 'allows selecting an item by its label' do
@@ -65,6 +65,6 @@ describe 'creating menus' do
 
     menu << item
 
-    menu[1].should.equal item
+    menu.items[1].should.equal item
   end
 end

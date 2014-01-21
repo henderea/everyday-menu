@@ -1,5 +1,7 @@
 $:.unshift('/Library/RubyMotion/lib')
 
+ENV['platform'] = 'osx' if ARGV[0] == 'spec'
+
 if ENV['platform'] == 'osx'
   require 'motion/project/template/osx'
 else

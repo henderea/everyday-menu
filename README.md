@@ -23,6 +23,8 @@
     * I now have a runtime dependency, the gem `rm-digest`, but it has the necessary objective-c code built-in, so     there shouldn't be any extra work for users of `everyday-menu`
 * 1.3.1:
     * Oops, I forgot to test outside the gem before releasing.  The dependency issue should be fixed now.
+* 1.3.2:
+    * Get tests working and add the missing `selectItem` method in `EverydayMenu::Menu`
 
 ## Issue Tracking
 Please use <https://everydayprogramminggenius.atlassian.net/browse/EM> for issue tracking.

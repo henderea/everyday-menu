@@ -129,6 +129,11 @@ module EverydayMenu
     def items
       @menuItems
     end
+
+    def selectItem(label)
+      item = self.items[label]
+      item.execute
+    end
   end
 
   class MenuItemList

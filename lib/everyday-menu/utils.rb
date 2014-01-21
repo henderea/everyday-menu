@@ -57,10 +57,6 @@ module EverydayMenu
       @items[id]
     end
 
-    def last
-      @items.last
-    end
-
     def execute(sender)
       @items.values.each { |item| item.execute(sender) }
     end

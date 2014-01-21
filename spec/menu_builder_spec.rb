@@ -1,9 +1,5 @@
-class TestMenu;
-  extend EverydayMenu::MenuBuilder;
-end
-class TestMenu2;
-  include EverydayMenu::MenuBuilder;
-end
+class TestMenu; extend EverydayMenu::MenuBuilder; end
+class TestMenu2; include EverydayMenu::MenuBuilder; end
 
 describe 'sugar for creating menus' do
 
@@ -39,10 +35,10 @@ describe 'sugar for creating menus' do
 
     builder.build!
 
-    builder[:main_menu][:test_item1].should.equal item1
-    builder[:main_menu][:test_item2].should.equal item2
+    builder[:main_menu].items[:test_item1].should.equal item1
+    builder[:main_menu].items[:test_item2].should.equal item2
 
-    builder[:main_menu][2].is(:separator_item).should.be.true
+    builder[:main_menu].items[2].is(:separator_item).should.be.true
   end
 
   it 'supports generating an NSApp\'s mainMenu items' do
@@ -63,7 +59,7 @@ describe 'sugar for creating menus' do
     mainMenu = NSApp.mainMenu
 
     menuItem = mainMenu.itemArray[0]
-    puts "menu1 title: #{menu1.title.inspect}"
+    puts "menu1 title: #{menu1[:title].inspect}"
     puts "menuItem title: #{menuItem.title.inspect}"
     menuItem.title.should.equal menu1[:title]
     menuItem.submenu.title.should.equal menu1[:title]
@@ -84,21 +80,21 @@ describe 'sugar for creating menus' do
       item    = EverydayMenu::MenuItem.create :test_item, 'Blah'
       context = Context.new(menu, { test_item: item })
 
-      menu[:test_item].should.be.nil
+      menu.items[:test_item].should.be.nil
 
       context.test_item
 
-      menu[:test_item].should.equal item
+      menu.items[:test_item].should.equal item
     end
 
     it 'creates separators from ___' do
       menu = EverydayMenu::Menu.create :test, 'Test'
 
-      menu[1].should.be.nil
+      menu.items[1].should.be.nil
 
       Context.new(menu).__send__ :'___'
 
-      menu[1].is[:separator_item].should.be.true
+      menu.items[1].is(:separator_item).should.be.true
     end
 
   end

@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = EverydayMenu::VERSION
   spec.authors       = ['Eric Henderson']
   spec.email         = ['henderea@gmail.com']
-  spec.description   = %q{An easy way to define menu items and visually lay out menus for your OSX apps. Based strongly on the drink-menu gem that I couldn't get to work for me.}
+  spec.description   = %q{An easy way to define menu items and visually lay out menus for your RubyMotion OSX apps. Based on the drink-menu gem that I couldn't get to work for me.}
   spec.summary       = %q{A more ruby way to create OS X menus in RubyMotion}
   spec.homepage      = 'https://github.com/henderea/everyday-menu'
   spec.license       = 'MIT'

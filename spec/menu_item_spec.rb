@@ -13,11 +13,10 @@ describe 'creating menu items' do
 
   it 'allows extra options to create method' do
     m = EverydayMenu::MenuItem.create :create_site, 'Create Site', enabled: false, tag: 1, state: NSOnState
-    m.menuItem.title.should.equal m.title
-    m.menuItem.isEnabled.should.equal m.isEnabled
-    m.menuItem.tag.should.equal m.tag
-    m.menuItem.image.should.equal m.image
-    m.menuItem.state.should.equal m.state
+    m.menuItem.title.should.equal m[:title]
+    m.menuItem.isEnabled.should.equal m.is :enabled
+    m.menuItem.tag.should.equal m[:tag]
+    m.menuItem.state.should.equal m[:state]
   end
 
   it 'allows creating separator items' do
