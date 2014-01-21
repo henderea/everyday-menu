@@ -37,6 +37,11 @@ Motion::Project::App.setup do |app|
 end
 
 if ARGV[0] == 'spec'
-  Dir.glob(File.join(File.dirname(__FILE__), 'lib/everyday-menu/**/*.rb')).each { |file| require file }
-  Dir.glob(File.join(File.dirname(__FILE__), 'spec/**/*.rb')).each { |file| require file }
+  require_relative 'lib/everyday-menu/utils'
+  require_relative 'lib/everyday-menu/menu_item'
+  require_relative 'lib/everyday-menu/menu'
+  require_relative 'lib/everyday-menu/menu_builder'
+  require_relative 'spec/menu_item_spec'
+  require_relative 'spec/menu_spec'
+  require_relative 'spec/menu_builder_spec'
 end
