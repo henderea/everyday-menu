@@ -67,43 +67,41 @@ module EverydayMenu
   end
 
   module MyAccessors
+    def get_val(name)
+      self.respond_to?(name) ? self.send(name) : self.containedObject.send(name)
+    end
+
+    def set_val(name, value)
+      self.respond_to?(name) ? self.send(name, value) : self.containedObject.send(name, value)
+    end
+
     def has(key)
       name = self.class.key_to_name(key, 'has')
-      if self.respond_to?(name)
-        self.send(name)
-      else
-        self.containedObject.send(name)
-      end
+      get_val(name)
     end
 
     def is(key)
       name = self.class.key_to_name(key, 'is')
-      if self.respond_to?(name)
-        self.send(name)
-      else
-        self.containedObject.send(name)
-      end
+      get_val(name)
     end
 
     def [](key)
       name = self.class.key_to_name(key)
-      if self.respond_to?(name)
-        self.send(name)
-      else
-        self.containedObject.send(name)
-      end
+      get_val(name)
     end
 
     def []=(key, value)
       name = self.class.key_to_name(key, 'set')
-      if self.respond_to?(name)
-        self.send(name, value)
-      else
-        self.containedObject.send(name, value)
-      end
+      set_val(name, value)
     end
 
     class << self
+      def self.setup_obj(obj, label, title, options)
+        obj[:label] = label
+        obj[:title] = title
+        options.each { |option| obj[option[0]] = option[1] }
+      end
+
       def self.key_to_name(key, prefix = nil)
         rval = key.to_s.gsub(/_(\w)/) { |_| $1.upcase }
         prefix.nil? ? rval : "#{prefix}#{rval[0].upcase}#{rval[1..-1]}"
@@ -113,64 +111,66 @@ module EverydayMenu
         name.to_s.gsub(/A-Z/) { |c| c.downcase }.to_sym
       end
 
+      def self.getter_names(name)
+        var_name = :"@#{name.to_s}"
+        isName   = :"#{key_to_name(name, 'is')}"
+        name2    = name_to_key(name)
+        return var_name, isName, name2
+      end
+
+      def self.setter_names(name)
+        var_name = :"@#{name.to_s}"
+        setName  = :"#{key_to_name(name, 'set')}"
+        name2    = name_to_key(name)
+        return var_name, setName, name2
+      end
+
+      def self.def_getter(name, do_is = false)
+        var_name, isName, name2 = getter_names(name)
+        define_method(name) { self.instance_variable_get(var_name) }
+        define_method(name2) { self.instance_variable_get(var_name) }
+        if do_is
+          define_method(isName) { self.instance_variable_get(var_name) }
+          define_method(:"#{name2.to_s}?") { self.instance_variable_get(var_name) }
+        end
+      end
+
+      def self.def_setter(name)
+        var_name, setName, name2 = setter_names(name)
+        define_method(:"#{name.to_s}=") { |val| self.instance_variable_set(var_name, val) }
+        define_method(setName) { |val| self.instance_variable_set(var_name, val) }
+        define_method(:"#{name2.to_s}=") { |val| self.instance_variable_set(var_name, val) }
+      end
+
       def self.my_attr_accessor(*names)
         names.each { |name|
-          var_name = :"@#{name.to_s}"
-          define_method(name) { self.instance_variable_get(var_name) }
-          define_method(:"#{name.to_s}=") { |val| self.instance_variable_set(var_name, val) }
-          setName = :"set#{name.to_s[0].upcase}#{name.to_s[1..-1]}"
-          define_method(setName) { |val| self.instance_variable_set(var_name, val) }
-          name2 = name_to_key(name)
-          define_method(name2) { self.instance_variable_get(var_name) }
-          define_method(:"#{name2.to_s}=") { |val| self.instance_variable_set(var_name, val) }
+          def_getter(name)
+          def_setter(name)
         }
       end
 
       def self.my_attr_accessor_bool(*names)
         names.each { |name|
-          var_name = :"@#{name.to_s}"
-          define_method(name) { self.instance_variable_get(var_name) }
-          define_method(:"#{name.to_s}=") { |val| self.instance_variable_set(var_name, val) }
-          isName = :"#{key_to_name(name, 'is')}"
-          define_method(isName) { self.instance_variable_get(var_name) }
-          setName = :"#{key_to_name(name, 'set')}"
-          define_method(setName) { |val| self.instance_variable_set(var_name, val) }
-          name2 = name_to_key(name)
-          define_method(name2) { self.instance_variable_get(var_name) }
-          define_method(:"#{name2.to_s}?") { self.instance_variable_get(var_name) }
-          define_method(:"#{name2.to_s}=") { |val| self.instance_variable_set(var_name, val) }
+          def_getter(name, true)
+          def_setter(name)
         }
       end
 
       def self.my_attr_reader(*names)
         names.each { |name|
-          var_name = :"@#{name.to_s}"
-          define_method(name) { self.instance_variable_get(var_name) }
-          name2 = name_to_key(name)
-          define_method(name2) { self.instance_variable_get(var_name) }
+          def_getter(name)
         }
       end
 
       def self.my_attr_reader_bool(*names)
         names.each { |name|
-          var_name = :"@#{name.to_s}"
-          define_method(name) { self.instance_variable_get(var_name) }
-          isName = :"#{key_to_name(name, 'is')}"
-          define_method(isName) { self.instance_variable_get(var_name) }
-          name2 = name_to_key(name)
-          define_method(name2) { self.instance_variable_get(var_name) }
-          define_method(:"#{name2.to_s}?") { self.instance_variable_get(var_name) }
+          def_getter(name, true)
         }
       end
 
       def self.my_attr_writer(*names)
         names.each { |name|
-          var_name = :"@#{name.to_s}"
-          define_method(:"#{name.to_s}=") { |val| self.instance_variable_set(var_name, val) }
-          setName = :"#{key_to_name(name, 'set')}"
-          define_method(setName) { |val| self.instance_variable_set(var_name, val) }
-          name2 = name_to_key(name)
-          define_method(:"#{name2.to_s}=") { |val| self.instance_variable_set(var_name, val) }
+          def_setter(name)
         }
       end
     end

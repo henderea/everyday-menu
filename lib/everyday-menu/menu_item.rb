@@ -4,9 +4,7 @@ module EverydayMenu
 
     def self.create(label, title, options = {})
       new.tap { |item|
-        item[:label] = label
-        item[:title] = title
-        options.each { |option| item[option[0]] = option[1] }
+        setup_obj(item, label, title, options)
       }
     end
 
