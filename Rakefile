@@ -26,14 +26,6 @@ rescue LoadError
 # ignored
 end
 
-if ARGV[0] == 'spec'
-  begin
-    Bundler.require(:default, :test)
-  rescue LoadError
-# ignored
-  end
-end
-
 Motion::Project::App.setup do |app|
   app.name       = 'everyday-menu'
   app.identifier = 'us.myepg.everyday-menu'
