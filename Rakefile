@@ -1,16 +1,16 @@
 $:.unshift('/Library/RubyMotion/lib')
 
 if ARGV[0] == 'spec'
-  ENV['CI']       = 'true'
+  #ENV['CI']       = 'true'
   ENV['platform'] = 'osx'
-  begin
-    require 'simplecov'
-  rescue LoadError
-# ignored
-  end
-
-  require 'coveralls'
-  Coveralls.wear!
+#  begin
+#    require 'simplecov'
+#  rescue LoadError
+## ignored
+#  end
+#
+#  require 'coveralls'
+#  Coveralls.wear!
 end
 
 if ENV['platform'] == 'osx'
