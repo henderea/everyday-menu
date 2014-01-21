@@ -112,36 +112,45 @@ module EverydayMenu
       end
 
       def self.getter_names(name)
-        var_name = :"@#{name.to_s}"
-        isName   = :"#{key_to_name(name, 'is')}"
-        name2    = name_to_key(name)
-        return var_name, isName, name2
+        name2, var_name = common_names(name)
+        isName          = :"#{key_to_name(name, 'is')}"
+        name2_is        = :"#{name2.to_s}?"
+        return var_name, isName, name2, name2_is
       end
 
       def self.setter_names(name)
+        name2, var_name = common_names(name)
+        setName         = :"#{key_to_name(name, 'set')}"
+        name_e          = :"#{name.to_s}="
+        name2_e         = :"#{name2.to_s}="
+        return var_name, setName, name_e, name2_e
+      end
+
+      def self.common_names(name)
         var_name = :"@#{name.to_s}"
-        setName  = :"#{key_to_name(name, 'set')}"
         name2    = name_to_key(name)
-        return var_name, setName, name2
+        return name2, var_name
       end
 
       def self.def_getter(name, do_is = false)
-        var_name, isName, name2 = getter_names(name)
-        block                   = ->() { self.instance_variable_get(var_name) }
+        var_name, isName, name2, name2_is = getter_names(name)
+        block                             = ->() { self.instance_variable_get(var_name) }
         define_method(name, &block)
         define_method(name2, &block)
-        if do_is
-          define_method(isName, &block)
-          define_method(:"#{name2.to_s}?", &block)
-        end
+        def_getter_is(isName, name2_is, &block) if do_is
+      end
+
+      def self.def_getter_is(isName, name2_is, &block)
+        define_method(isName, &block)
+        define_method(name2_is, &block)
       end
 
       def self.def_setter(name)
-        var_name, setName, name2 = setter_names(name)
-        block                    = ->(val) { self.instance_variable_set(var_name, val) }
-        define_method(:"#{name.to_s}=", &block)
+        var_name, setName, name_e, name2_e = setter_names(name)
+        block                              = ->(val) { self.instance_variable_set(var_name, val) }
+        define_method(name_e, &block)
         define_method(setName, &block)
-        define_method(:"#{name2.to_s}=", &block)
+        define_method(name2_e, &block)
       end
 
       def self.my_attr_accessor(*names)
