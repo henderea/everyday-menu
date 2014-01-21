@@ -1,6 +1,7 @@
 $:.unshift('/Library/RubyMotion/lib')
 
 if ARGV[0] == 'spec'
+  ENV['CI']       = 'true'
   ENV['platform'] = 'osx'
   begin
     require 'simplecov'
