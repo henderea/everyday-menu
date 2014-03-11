@@ -4,7 +4,6 @@
 [![Build Status](https://travis-ci.org/henderea/everyday-menu.png?branch=master)](https://travis-ci.org/henderea/everyday-menu)
 [![Dependency Status](https://gemnasium.com/henderea/everyday-menu.png)](https://gemnasium.com/henderea/everyday-menu)
 [![Code Climate](https://codeclimate.com/github/henderea/everyday-menu.png)](https://codeclimate.com/github/henderea/everyday-menu)
-[![Coverage Status](https://coveralls.io/repos/henderea/everyday-menu/badge.png)](https://coveralls.io/r/henderea/everyday-menu)
 
 ## Updates
 * 0.2.0:
