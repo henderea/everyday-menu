@@ -6,7 +6,7 @@ module EverydayMenu
       my_attr_writer :label
       my_attr_accessor_bool :servicesMenu, :windowsMenu, :helpMenu, :mainMenu
       my_attr_reader_bool :statusMenu
-      my_attr_reader :statusItemTitle, :statusItemIcon, :statusItemViewClass, :statusItemLength
+      my_attr_reader :statusItemTitle, :statusItemIcon, :statusItemViewClass, :statusItemLength, :statusItem
       attr_reader :menu, :builder
     end
 
