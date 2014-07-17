@@ -6,7 +6,7 @@ module EverydayMenu
       my_attr_writer :label
       my_attr_accessor_bool :servicesMenu, :windowsMenu, :helpMenu, :mainMenu
       my_attr_reader_bool :statusMenu
-      my_attr_reader :statusItemTitle, :statusItemIcon, :statusItemViewClass
+      my_attr_reader :statusItemTitle, :statusItemIcon, :statusItemViewClass, :statusItemLength
       attr_reader :menu, :builder
     end
 
@@ -29,6 +29,7 @@ module EverydayMenu
       @statusItemTitle     = nil
       @statusItemIcon      = nil
       @statusItemViewClass = nil
+      @statusItemLength    = nil
     end
 
     def menuItemFromMenu!
@@ -98,9 +99,15 @@ module EverydayMenu
       @statusMenu          = true unless viewClass.nil?
     end
 
+    def setStatusItemLength(length)
+      @mainMenu         = false unless length.nil?
+      @statusItemLength = length
+      @statusMenu       = true unless length.nil?
+    end
+
     def createStatusItem!
       statusBar                 = NSStatusBar.systemStatusBar
-      @statusItem               = statusBar.statusItemWithLength(NSSquareStatusItemLength)
+      @statusItem               = statusBar.statusItemWithLength(@statusItemLength || NSSquareStatusItemLength)
       @statusItem.highlightMode = true
 
       @statusItem.menu = self.menu
