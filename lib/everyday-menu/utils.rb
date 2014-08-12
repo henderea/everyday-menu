@@ -41,7 +41,7 @@ module EverydayMenu
     end
 
     def unique_id
-      EverydayRmDigest::MD5.hexdigest("#{@rand.rand}#{@rand.rand}")
+      EverydayRmDigest::MD5.hexdigest(WeakRef.new("#{@rand.rand}#{@rand.rand}"))
     end
 
     def rand_id
@@ -103,12 +103,12 @@ module EverydayMenu
       end
 
       def self.key_to_name(key, prefix = nil)
-        rval = key.to_s.gsub(/_(\w)/) { |_| $1.upcase }
-        prefix.nil? ? rval : "#{prefix}#{rval[0].upcase}#{rval[1..-1]}"
+        rval = WeakRef.new(WeakRef.new(key.to_s).gsub(/_(\w)/) { |_| WeakRef.new(WeakRef.new($1).upcase) })
+        prefix.nil? ? rval : WeakRef.new("#{prefix}#{WeakRef.new(WeakRef.new(rval[0]).upcase)}#{WeakRef.new(rval[1..-1])}")
       end
 
       def self.name_to_key(name)
-        name.to_s.gsub(/A-Z/) { |c| c.downcase }.to_sym
+        WeakRef.new(WeakRef.new(name.to_s).gsub(/A-Z/) { |c| WeakRef.new(WeakRef.new(c).downcase) }).to_sym
       end
 
       def self.getter_names(name)
