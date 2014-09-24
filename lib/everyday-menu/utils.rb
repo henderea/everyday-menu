@@ -1,7 +1,3 @@
-class EverydayRmDigest
-  include RmDigest
-end
-
 module EverydayMenu
   class EverydayCommand
     attr_reader :label, :parent, :command_id
@@ -40,8 +36,12 @@ module EverydayMenu
       @rand   = Random.new
     end
 
+    def md5(str)
+      str.dataUsingEncoding(NSUTF8StringEncoding).MD5HexDigest
+    end
+
     def unique_id
-      EverydayRmDigest::MD5.hexdigest(WeakRef.new("#{@rand.rand}#{@rand.rand}"))
+      md5(WeakRef.new("#{@rand.rand}#{@rand.rand}"))
     end
 
     def rand_id

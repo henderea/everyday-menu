@@ -16,12 +16,8 @@ test/tmp
 test/version_tmp
 tmp
 build
-vendor
-
 /.idea/
-
 /projectFilesBackup/
-
 /.repl_history
-
 /.dat3715.000
+vendor/MD5SHA1Digest/build-MacOSX
