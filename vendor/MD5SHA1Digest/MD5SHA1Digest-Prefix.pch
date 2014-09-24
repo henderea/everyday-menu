@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'MD5SHA1Digest' target in the 'MD5SHA1Digest' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif
