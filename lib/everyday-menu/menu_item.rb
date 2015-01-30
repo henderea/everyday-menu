@@ -1,11 +1,13 @@
 module EverydayMenu
   class DynamicTitle
     attr_accessor :title
-    def initialize(getter, item, title)
+    def initialize(getter, item_parent, item, title)
       @getter = getter
+      @item_parent = item_parent
       @item = item
       @title = title
       @item.bind('title', toObject: self, withKeyPath: 'title', options: { 'NSContinuouslyUpdatesValue' => true })
+      @item.bind(NSEnabledBinding, toObject: @item_parent.commands, withKeyPath: 'canExecute', options: nil)
     end
     def update
       self.performSelectorOnMainThread('title=:', withObject: @getter.call, waitUntilDone: false)
@@ -141,7 +143,7 @@ module EverydayMenu
     my_attr_reader :dynamicTitle
 
     def setDynamicTitle(getter)
-      @dynamicTitle = EverydayMenu::DynamicTitle.new(getter, self.item, self[:title])
+      @dynamicTitle = EverydayMenu::DynamicTitle.new(getter, self, self.item, self[:title])
     end
 
     alias :dynamicTitle= :setDynamicTitle

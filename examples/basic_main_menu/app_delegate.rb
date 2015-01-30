@@ -9,6 +9,7 @@ class AppDelegate
     subscribe_open
     subscribe_start_stop
     puts "start_stop subscribe 1 parent label: #{MainMenu[:file].items[:start_stop][:commands][:start_stop_command_id].label}"
+    MainMenu[:statusbar].items[:status_date].updateDynamicTitle
   end
 
   def subscribe_start_stop

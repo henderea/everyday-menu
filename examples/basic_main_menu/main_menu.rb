@@ -13,6 +13,7 @@ class MainMenu
     menuItem :close, 'Close', key_equivalent: 'w'
     menuItem :start_stop, 'Start'
 
+    menuItem :status_date, 'Date: ', dynamicTitle: -> { "Date: #{NSDate.date.to_s}" }
     menuItem :status_open, 'Open', key_equivalent: 'o'
     menuItem :status_new, 'New'
     menuItem :status_close, 'Close', key_equivalent: 'w'
@@ -39,6 +40,8 @@ class MainMenu
     }
 
     statusbarMenu(:statusbar, 'Statusbar Menu') {
+      status_date
+      ___
       status_new
       status_open
       ___
