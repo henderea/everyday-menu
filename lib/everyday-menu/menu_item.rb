@@ -153,6 +153,8 @@ module EverydayMenu
       @dynamicTitle.update if @dynamicTitle
     end
 
+    my_attr_accessor_bool :opt
+
     def runOnBuild
       onBuild.each { |block| block.call }
     end

@@ -20,6 +20,7 @@ module EverydayMenu
       @label               = label
       @builder             = block
       @menu                = NSMenu.alloc.init
+      @menu.delegate       = self
       @menuItems           = MenuItemList.new(@menu)
       @mainMenu            = false
       @statusMenu          = false
@@ -30,6 +31,14 @@ module EverydayMenu
       @statusItemIcon      = nil
       @statusItemViewClass = nil
       @statusItemLength    = nil
+    end
+
+    def menuNeedsUpdate(menu)
+      flags = (NSEvent.modifierFlags & NSDeviceIndependentModifierFlagsMask)
+      shouldHideSecretMenu = !(flags == NSAlternateKeyMask)
+      @menuItems.each { |menuItem|
+        menuItem.item.setHidden(shouldHideSecretMenu) if menuItem.opt?
+      }
     end
 
     def menuItemFromMenu!

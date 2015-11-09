@@ -16,7 +16,7 @@ class MainMenu
     menuItem :status_date, 'Date: ', dynamicTitle: -> { "Date: #{NSDate.date.to_s}" }
     menuItem :status_open, 'Open', key_equivalent: 'o'
     menuItem :status_new, 'New'
-    menuItem :status_close, 'Close', key_equivalent: 'w'
+    menuItem :status_close, 'Close', key_equivalent: 'w', opt: true
     menuItem :status_quit, 'Quit', preset: :quit
   end
 
