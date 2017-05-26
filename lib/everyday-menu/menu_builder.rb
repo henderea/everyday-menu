@@ -10,6 +10,14 @@ module EverydayMenu
         @menu << MenuItem.separator
       end
 
+      def <<(menuItem)
+        if @menuItems.key?(menuItem)
+          @menu << @menuItems[menuItem]
+        else
+          raise "unable to find menu item #{menuItem}"
+        end
+      end
+
       def method_missing(meth, *args)
         if @menuItems.key?(meth)
           @menu << @menuItems[meth]
